@@ -1,0 +1,1 @@
+nohup python app.py > process.log 2>&1 &
