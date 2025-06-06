@@ -88,9 +88,10 @@ def container_allocate():
     data = request.get_json()
     name = data.get('name')
     gpu_list = data.get('gpu_list')
-    if not name or not gpu_list:
-            return jsonify({"success": False, "message": "Missing 'name' or 'gpu_list'"}), 400
-    RemoteExecuter.allocate_gpu(name, gpu_list) 
+    pci_list = data.get('pci_list')
+    if not name or not gpu_list or not pci_list:
+        return jsonify({"success": False, "message": "Missing 'name' or 'gpu_list' or 'pci_list'"}), 400
+    RemoteExecuter.allocate_gpu(name, gpu_list, pci_list) 
     return jsonify({"success": True})
 
 @app.route('/container/release', methods=['POST'])

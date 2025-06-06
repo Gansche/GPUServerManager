@@ -176,15 +176,15 @@ class RemoteExecuter:
             return None
         
     @classmethod
-    def allocate_gpu(cls, name, gpu_list):
+    def allocate_gpu(cls, name, gpu_list, pci_list):
         try:
             allocated_gpus = []
-            for gpu in gpu_list:
+            for i in range(len(gpu_list)):
                 try:
-                    result = subprocess.run(['lxc', 'config', 'device', 'add', name, f'gpu{gpu}', 'gpu', f'id={gpu}'], capture_output=True, text=True, check=True)
+                    result = subprocess.run(['lxc', 'config', 'device', 'add', name, f'gpu{gpu_list[i]}', 'gpu', 'gputype=physical', f'pci={pci_list[i]}'], capture_output=True, text=True, check=True)
                     if result.returncode != 0:
-                        raise Exception(f"Failed to allocate GPU {gpu}: {result.stderr}")
-                    allocated_gpus.append(gpu)
+                        raise Exception(f"Failed to allocate GPU {gpu_list[i]}: {result.stderr}")
+                    allocated_gpus.append(gpu_list[i])
                 except Exception as e:
                     for allocated_gpu in allocated_gpus:
                         try:
